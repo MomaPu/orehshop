@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<head>
+    <title>Корзина</title>
+</head>
+<body>
+    <h1>Ваша корзина</h1>
+
+    {% if cart_items %}
+        <ul>
+            {% for item in cart_items %}
+                <li>
+                    {{ item.product.name }} - {{ item.quantity }} шт. - {{ item.product.price }} руб.
+                </li>
+            {% endfor %}
+        </ul>
+        <p>Общая стоимость: {{ total_price }} руб.</p>
+        <a href="#">Оформить заказ</a> # Ссылка на страницу оформления заказа
+    {% else %}
+        <p>Ваша корзина пуста.</p>
+    {% endif %}
+</body>
+{% endblock %}
