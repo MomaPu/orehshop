@@ -1,11 +1,27 @@
 from products.models import Products
 
 
-class ProductFilter:
-    def __init__(self, max_price=None, min_price=None, with_reviews_only=False):
+CATEGORY_CHOICES = {
+    '1': 'Миндаль',
+    '2': 'Макадами',
+    '3': 'Кедровые',
+    '4': 'Фисташки',
+    '5': 'Бразильские',
+    '6': 'Пекан',
+    '7': 'Кедровые',
+    '8': 'Кешью',
+    '9': 'Кедровые',
+    '10': 'Фундук',
+    '11': 'Грецкий орех',
+    '12': 'Арахис',
+}
+
+
+class CourseFilter:
+    def __init__(self, max_price=None, min_price=None, category=None):
         self.max_price = max_price
         self.min_price = min_price
-        self.with_reviews_only = with_reviews_only
+        self.category = category
     def find(self):
         qs = Products.objects.all()
 
@@ -15,10 +31,12 @@ class ProductFilter:
         if self.max_price is not None:
             qs = qs.filter(price__lte=self.max_price)
 
-        if self.with_reviews_only:
-            qs = qs.filter(Отзыв__isnull=False).distinct()
+        if self.category:
+            qs = qs.filter(category_id=self.category)
+
         return qs
+
 
 def get_products():
 
-    return Products.objects.all()
+    return Products.objects.all().order_by('name')

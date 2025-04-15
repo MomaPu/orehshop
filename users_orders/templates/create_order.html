@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <h1>Оформление заказа</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Подтвердить заказ</button>
+    </form>
+
+{% endblock %}

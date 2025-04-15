@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block main %}
+    <h1>Мои заказы</h1>
+    <ul>
+        {% for order in orders %}
+            <li>
+                Заказ #{{ order.id }} - {{ order.status }} - {{ order.total_price }} руб.
+                <br>
+                Дата: {{ order.created_at }}
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

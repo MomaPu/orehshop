@@ -162,83 +162,91 @@
 <body>
 
 
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/products/">Сладкий орешек</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#cart"><i class="fas fa-shopping-cart"></i> Корзина</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'info' %}">Информация о магазине</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<div class="container-fluid">
-    <div class="row flex-grow-1">
-        <div class="col-md-2 col-5">
-            <!-- Боковая панель -->
-            <div class="sidebar">
-                <ul class="list-unstyled">
-                    {% if user.is_authenticated %}
-                        <li>Здравствуйте, {{ user.get_username }}</li>
-                        <li>
-                            <form action="{% url 'logout' %}?next={% url 'home' %}" method="post" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-dark">Выход</button>
-                            </form>
-                        </li>
-                    {% else %}
-                        <li><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Авторизация</a></li>
-                        <li><a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Регистрация</a></li>
-                    {% endif %}
-                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#supportModal"><i class="fas fa-headset"></i> Поддержка</a></li>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/products/">Сладкий орешек</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#cart"><i class="fas fa-shopping-cart"></i> Корзина</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'info' %}">Информация о магазине</a>
+                    </li>
                 </ul>
             </div>
         </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row flex-grow-1">
+            <div class="col-md-2 col-5">
+                <!-- Боковая панель -->
+                <div class="sidebar">
+                    <ul class="list-unstyled">
+                        {% if user.is_authenticated %}
+                            <li>Здравствуйте, {{ user.get_username }}</li>
+                            <li>
+                                <form action="{% url 'user_profile' %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-dark">Профиль</button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <li><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Авторизация</a></li>
+                            <li><a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Регистрация</a></li>
+                        {% endif %}
+                        <li><a href="#" data-bs-toggle="modal" data-bs-target="#supportModal"><i class="fas fa-headset"></i> Поддgержка</a></li>
+                    </ul>
+                </div>
+            </div>
 
 
-        <main class="col-md-9 col-12 mt-3">
-            {% block main %} {% endblock %}
-        </main>
+            <main class="col-md-9 col-12 mt-3">
+                {% block main %} {% endblock %}
+            </main>
+        </div>
     </div>
-</div>
 
-<!-- Поддержка Modal -->
-<div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="supportModalLabel">Поддержка</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Ваш Email:</label>
-                        <input type="email" class="form-control" id="recipient-name" name="recipient-name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Сообщение:</label>
-                        <textarea class="form-control" id="message-text" required></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary">Отправить сообщение</button>
+    <!-- Поддержка Modal -->
+    <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="supportModalLabel">Поддержка</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Ваш Email:</label>
+                            <input type="email" class="form-control" id="recipient-name" name="recipient-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Сообщение:</label>
+                            <textarea class="form-control" id="message-text" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary">Отправить сообщение</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Footer -->
-<footer>
-    © 2024 Brunoyam
-</footer>
+    <!-- Footer -->
+    <footer>
+        © 2024 Brunoyam
+    </footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.min.js"></script>
+
+</body>
+
+
