@@ -9,7 +9,7 @@ from products.services import get_products
 def home(request):
     form = ProductsFilterForm(request.GET or None)
     products = get_products()
-
+    products = products.distinct()
 
     if request.GET:
         if form.is_valid():
@@ -28,7 +28,12 @@ def home(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'main_page.html', {'form': form, 'page_obj': page_obj})
+    filter_params = request.GET.copy()  # Создаем копию GET параметров
+    if 'page' in filter_params:
+        del filter_params['page']
+
+    return render(request, 'main_page.html', {'form': form, 'page_obj': page_obj,
+                                              'filter_params': filter_params.urlencode()})
 
 
 def product_detail(request, id_product):
@@ -64,7 +69,7 @@ def create_review(request, product_id):
             review.product = product
             review.user = request.user
             review.save()
-            return redirect('product_detail_with_reviews', product_id=product.id)
+            return redirect('product_detail', id_product=product.id)
     else:
         form = ReviewForm()
 

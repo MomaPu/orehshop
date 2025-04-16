@@ -205,7 +205,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Сладкий орешек</a>
+            <a class="navbar-brand" href="{% url 'home' %}">Сладкий орешек</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -277,7 +277,7 @@
                             <div class="product-card">
                                 <img src="{{ product.image.url }}" alt="{{ product.name }}">
                                 <div class="product-info">
-                                    <li><a href="{% url 'product_detail' product.id %}" class="product-name">{{ product.name }}</a></li>
+                                    <a href="{% url 'product_detail' product.id %}" class="product-name">{{ product.name }}</a>
                                     <p>Цена {{ product.price }} руб.</p>
                                     <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">В корзину</a>
                                 </div>
@@ -299,7 +299,7 @@
                                     </a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Предыдущая страница">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ filter_params }}" aria-label="Предыдущая страница">
                                         <span aria-hidden="true">&lsaquo; предыдущая</span>
                                     </a>
                                 </li>
@@ -309,12 +309,12 @@
                             </li>
                             {% if page_obj.has_next %}
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Следующая страница">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ filter_params }}" aria-label="Следующая страница">
                                         <span aria-hidden="true">следующая &rsaquo;</span>
                                     </a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Последняя страница">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&{{ filter_params }}" aria-label="Последняя страница">
                                         <span aria-hidden="true">последняя &raquo;</span>
                                     </a>
                                 </li>

@@ -148,6 +148,7 @@
         }
 
         footer {
+            position: absolute;
             background: #293133;
             color: #fff;
             padding: 10px 20px;
@@ -157,21 +158,61 @@
         .container-fluid {
             flex: 1;
         }
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination a,
+.pagination span.current {
+    padding: 8px 12px;
+    margin: 0 5px;
+    border: 1px solid #A67B5B; /* Ореховая рамка */
+    border-radius: 4px;
+    text-decoration: none;
+    color: #A67B5B; /* Ореховый цвет текста */
+    background-color: #F8F8F8; /* Светло-серый фон */
+    transition: background-color 0.3s, color 0.3s; /* Плавный переход */
+}
+
+.pagination a:hover {
+    background-color: #A67B5B; /* Ореховый фон при наведении */
+    color: white; /* Белый цвет текста при наведении */
+}
+
+.pagination span.current {
+    background-color: #A67B5B; /* Ореховый фон для текущей страницы */
+    color: white; /* Белый цвет текста для текущей страницы */
+    font-weight: bold; /* Выделение текущей страницы */
+    border-color: #A67B5B; /* Ореховая рамка для текущей страницы */
+}
+
+/* Дополнительные стили для улучшения внешнего вида */
+.pagination .step-links {
+    display: flex;
+    align-items: center;
+}
+
+.pagination a:first-child,
+.pagination a:last-child {
+    font-size: 0.9em;
+    padding: 6px 10px;
+}
     </style>
 </head>
 <body>
 
-
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/products/">Сладкий орешек</a>
+            <a class="navbar-brand" href="{% url 'home' %}">Сладкий орешек</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="#cart"><i class="fas fa-shopping-cart"></i> Корзина</a>
+                        <a class="nav-link" href="{% url 'cart_view' %}"><i class="fas fa-shopping-cart"></i> Корзина</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'info' %}">Информация о магазине</a>
@@ -180,11 +221,13 @@
             </div>
         </div>
     </nav>
+
+    <!-- Main Content Area -->
     <div class="container-fluid">
         <div class="row flex-grow-1">
             <div class="col-md-2 col-5">
-                <!-- Боковая панель -->
-                <div class="sidebar">
+                <!-- Sidebar -->
+                <aside class="sidebar">
                     <ul class="list-unstyled">
                         {% if user.is_authenticated %}
                             <li>Здравствуйте, {{ user.get_username }}</li>
@@ -198,49 +241,59 @@
                             <li><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Авторизация</a></li>
                             <li><a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Регистрация</a></li>
                         {% endif %}
-                        <li><a href="#" data-bs-toggle="modal" data-bs-target="#supportModal"><i class="fas fa-headset"></i> Поддержка</a></li>
+                        <li>
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="fas fa-headset"></i> Поддержка
+                            </a>
+                        </li>
                     </ul>
-                </div>
+                </aside>
             </div>
-
-
-            <main class="col-md-9 col-12 mt-3">
+            <main class="col-md-9 col-12 mt-3 d-flex flex-column">
                 {% block main %} {% endblock %}
             </main>
         </div>
+
     </div>
 
-    <!-- Поддержка Modal -->
-    <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
+    <!-- Модальное окно -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="supportModalLabel">Поддержка</h5>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ореховая.Поддержка</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form method="post" action="{% url 'support_view' %}">
+                        {% csrf_token %}
                         <div class="mb-3">
-                            <label for="recipient-name" class="col-form-label">Ваш Email:</label>
-                            <input type="email" class="form-control" id="recipient-name" name="recipient-name" required>
+                            <label for="recipient-name" class="col-form-label">Ваша почта:</label>
+                            <input type="text" class="form-control" id="recipient-name" name="recipient-name" required>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Сообщение:</label>
-                            <textarea class="form-control" id="message-text" required></textarea>
+                            <textarea class="form-control" id="message-text" name="message-text" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-dark">Отправить сообщение</button>
                         </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary">Отправить сообщение</button>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Footer -->
     <footer>
         © 2024 Brunoyam
     </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.min.js"></script>
 
 </body>
