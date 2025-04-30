@@ -12,7 +12,7 @@ from reviews.forms import ReviewForm
 
 def home(request):
     form = ProductsFilterForm(request.GET or None)
-    products = get_filtered_products(form.cleaned_data if form.is_valid() else {}) # Вызываем сервисный слой
+    products = get_filtered_products(form.cleaned_data if form.is_valid() else {})
 
     paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
