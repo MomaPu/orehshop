@@ -1,42 +1,35 @@
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404
+
 from products.models import Products
+from reviews.models import Reviews
 
 
-CATEGORY_CHOICES = {
-    '1': 'Миндаль',
-    '2': 'Макадами',
-    '3': 'Кедровые',
-    '4': 'Фисташки',
-    '5': 'Бразильские',
-    '6': 'Пекан',
-    '7': 'Кедровые',
-    '8': 'Кешью',
-    '9': 'Кедровые',
-    '10': 'Фундук',
-    '11': 'Грецкий орех',
-    '12': 'Арахис',
-}
+def get_product_with_reviews(product_id, page_number=1, reviews_per_page=5):
+    product = get_object_or_404(Products, id=product_id)
+    reviews = product.reviews.all().order_by('-created_at')
+
+    paginator = Paginator(reviews, reviews_per_page)
+    page_obj = paginator.get_page(page_number)
+
+    return {'product': product, 'reviews': page_obj}
+
+def get_filtered_products(filters):
+
+    products = Products.objects.all()
+
+    if filters.get('min_price'):
+        products = products.filter(price__gte=filters['min_price'])
+    if filters.get('max_price'):
+        products = products.filter(price__lte=filters['max_price'])
+    if filters.get('categories'):
+        products = products.filter(category__in=filters['categories'])
+
+    return products.distinct()
 
 
-class CourseFilter:
-    def __init__(self, max_price=None, min_price=None, category=None):
-        self.max_price = max_price
-        self.min_price = min_price
-        self.category = category
-    def find(self):
-        qs = Products.objects.all()
+def create_product_review(product_id, user, data):
 
-        if self.min_price is not None:
-            qs = qs.filter(price__gte=self.min_price)
-
-        if self.max_price is not None:
-            qs = qs.filter(price__lte=self.max_price)
-
-        if self.category:
-            qs = qs.filter(category_id=self.category)
-
-        return qs
-
-
-def get_products():
-
-    return Products.objects.all().order_by('name')
+    product = get_object_or_404(Products, pk=product_id)
+    review = Reviews.objects.create(product_id=product.id, author=user, text=data.get('text')) # Используем create
+    return review

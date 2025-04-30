@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="shop-info-container">
+    <h2>Информация о магазине</h2>
+    {% if info %}
+        {% for item in info %}
+            <div class="info-text">
+                {{ item.text }}  
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Информация о магазине отсутствует.</p>
+    {% endif %}
+</div>
+{% endblock %}

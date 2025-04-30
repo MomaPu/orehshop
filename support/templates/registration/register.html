@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <body>
+        {% block content %}
+          <h2>Регистрация</h2>
+          <form method="post">
+            {% csrf_token %}
+            {% if form.errors %}
+              <p>Пожалуйста, исправьте ошибки ниже:</p>
+            {% endif %}
+
+            {{ form.as_p }}  {# Отображает все поля формы #}
+
+            <button type="submit">Зарегистрироваться</button>
+          </form>
+        {% endblock %}
+    </body>
+{% endblock %}

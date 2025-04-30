@@ -1,24 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block main %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-
 <div class="profile-container">
     <h2>Профиль пользователя</h2>
-
     <form method="POST" enctype="multipart/form-data" class="profile-form">
         {% csrf_token %}
 
+        <!-- Блок аватара -->
         <div class="profile-header">
             <div class="avatar-container">
-                {% with avatar_url=user.avatar.url|default:'' %}
-                    {% if avatar_url %}
-                        <img id="avatar-preview" src="{{ avatar_url }}" alt="Аватар пользователя" class="profile-avatar">
+                {% if user.avatar %}
+                    {% if user.avatar.url %}
+                        <img id="avatar-preview" src="{{ user.avatar.url }}" alt="Аватар пользователя" class="profile-avatar">
                     {% else %}
                         <img id="avatar-preview" src="{% static 'img/default-avatar.png' %}" alt="Аватар по умолчанию" class="profile-avatar">
                     {% endif %}
-                {% endwith %}
+                {% else %}
+                    <img id="avatar-preview" src="{% static 'img/default-avatar.png' %}" alt="Аватар по умолчанию" class="profile-avatar">
+                {% endif %}
                 <label for="{{ form.avatar.id_for_label }}" class="upload-label">
                     <i class="fas fa-upload"></i> Загрузить новый аватар
                 </label>
@@ -26,6 +28,7 @@
             </div>
         </div>
 
+        <!-- Поля для редактирования информации -->
         <div class="profile-info">
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Имя пользователя:</label>
@@ -43,26 +46,25 @@
                 {% endif %}
             </div>
 
-            <!-- Дополнительные поля профиля (например, дата рождения, телефон) -->
-            <!-- Добавьте сюда свои поля, если нужно -->
-            <div class="form-group">
-                <label for="phone">Номер телефона:</label>
-                <input type="tel" name="phone" id="phone" value="{{ user.phone }}" class="form-control">
-            </div>
         </div>
 
+        <!-- Кнопки -->
         <button type="submit" class="save-button">
             <i class="fas fa-save"></i> Сохранить изменения
         </button>
-        <a href="{% url 'users_orders' %}" style="color: black;" >Мои заказы</a>
+        <a href="{% url 'users_orders' %}" style="color: black;">Мои заказы</a>
     </form>
+
+    <!-- Logout форма -->
     <form action="{% url 'logout' %}?next={% url 'home' %}" method="post" style="display:inline;">
         {% csrf_token %}
         <button type="submit" class="btn btn-dark">Выход</button>
     </form>
 </div>
+
 <style>
     body {
+        background-image: url("{% static 'images/fon.jpg' %}");
         font-family: Arial, sans-serif;
         background-color: #f8f9fa;
         color: #343a40;
@@ -79,7 +81,7 @@
 
     h2 {
         text-align: center;
-        color: #007bff;
+        color: #dark;
         margin-bottom: 30px;
     }
 

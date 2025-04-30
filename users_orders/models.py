@@ -31,7 +31,7 @@ class Order(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 	total_price = models.DecimalField(max_digits=11, decimal_places=2)
-	products = models.JSONField()
+	products = models.ManyToManyField(Products, related_name='orders')
 
 	def __str__(self):
 		return f'Order {self.id} by {self.user.username} - Status: {self.status}'

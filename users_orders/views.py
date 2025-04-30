@@ -1,16 +1,13 @@
-# products/views.py
 from django.shortcuts import render, redirect
-from .models import Products, Order
+from pyexpat.errors import messages
+
+from .models import Order
+from .services import add_product_to_cart, get_cart_data, create_order_from_cart, clear_cart
 
 
 def add_to_cart(request, product_id):
     cart = request.session.get('cart', {})
-    product_id_str = str(product_id)
-
-    if product_id_str in cart:
-        cart[product_id_str] += 1
-    else:
-        cart[product_id_str] = 1
+    cart = add_product_to_cart(cart, product_id)
 
     request.session['cart'] = cart
     request.session.modified = True
@@ -20,19 +17,9 @@ def add_to_cart(request, product_id):
 
 def cart_view(request):
     cart = request.session.get('cart', {})
-    cart_items = []
-    total_price = 0
+    cart_data = get_cart_data(cart)
 
-    for product_id_str, quantity in cart.items():
-        product_id = int(product_id_str)
-        try:
-            product = Products.objects.get(pk=product_id)
-            cart_items.append({'product': product, 'quantity': quantity})
-            total_price += product.price * quantity
-        except Products.DoesNotExist:
-            pass
-
-    context = {'cart_items': cart_items, 'total_price': total_price}
+    context = {'cart_items': cart_data['cart_items'], 'total_price': cart_data['total_price']}
     return render(request, 'cart.html', context)
 
 
@@ -42,39 +29,15 @@ def create_order(request):
     if not cart:
         return render(request, 'cart.html', {'message': 'Корзина пуста'})
 
-    cart_items = []
-    total_price = 0
-
-    for product_id_str, quantity in cart.items():
-        product_id = int(product_id_str)
-        try:
-            product = Products.objects.get(pk=product_id)
-
-            cart_items.append({
-                'product_id': product.id,  # Сохраняем id продукта
-                'name': product.name,  # Сохраняем название продукта
-                'quantity': quantity,  # Сохраняем количество
-                'price': str(product.price)  # Преобразуем Decimal в строку
-            })
-            total_price += product.price * quantity
-        except Products.DoesNotExist:
-            continue
+    cart_data = get_cart_data(cart)
 
     if request.method == "POST":
-
-        order = Order.objects.create(
-            user=request.user,
-            total_price=float(total_price),  # Преобразуем Decimal в float
-            products=cart_items
-        )
-
-        request.session['cart'] = {}
-        request.session.modified = True
+        order = create_order_from_cart(request.user, cart_data)
+        clear_cart(request)
 
         return redirect('user_profile')
 
     return render(request, 'create_order.html')
-
 
 def user_orders(request):
     orders = Order.objects.filter(user=request.user)
